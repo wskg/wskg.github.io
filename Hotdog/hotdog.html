@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<style>
+  button {
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -100px;
+    margin-top: -100px;
+  }
+
+  input {
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -100px;
+    margin-top: -100px;
+    display: none;
+  }
+</style>
+
+<body>
+  <h1>已创建【<span id="t1"></span>】热狗，你舔了【<span id="t2"></span>】个</h1>
+  <h2></h2>
+  <button>开始游戏</button>
+  <input type="button" value="游戏结束">
+  <div
+    style="width: 80px;height: 80px;position: absolute;left: 0;bottom: 2px;background: url(./下载.png) no-repeat;background-size: 100%;">
+  </div>
+  <script>
+    var btn = document.querySelector('button')
+    var inpt = document.querySelector('input')
+    var time = 5
+    var h2 = document.querySelector('h2')
+    btn.onclick = function () {
+      btn.style.display = 'none'
+
+      var divbox = document.querySelector('div')
+      document.addEventListener('mousemove', function (evt) {
+        var e = evt || window.event
+        var leftx = e.clientX
+        if (leftx <= 0) {
+          leftx = 0
+        }
+        if (leftx >= window.innerWidth - 80) {
+          leftx = window.innerWidth - 80
+        }
+        divbox.style.left = leftx + 'px'
+      })
+
+      function createHotDog() {
+        // 1 创建热狗
+        var imgObj = document.createElement('img')
+        imgObj.src = './hotdog.jpg'
+        imgObj.width = 20
+        // 2 加随机样式
+        imgObj.style.position = 'absolute'
+        imgObj.style.top = '0px'
+        var min = 0
+        var max = (window.innerWidth || document.documentElement.clientWidth) - 20
+        imgObj.style.left = Math.floor(Math.random() * (max - min + 1) + min) + 'px'
+
+        document.body.appendChild(imgObj)
+        var top = 0
+        var time = setInterval(function () {
+          top += 3
+          if (top <= window.innerHeight - 40) {
+            imgObj.style.top = top + 'px'
+          }
+          if (top >= window.innerHeight - 40) {
+            document.body.removeChild(imgObj)
+            clearInterval(time)
+          }
+          if (parseInt(imgObj.style.left) >= parseInt(divbox.style.left)
+            && parseInt(imgObj.style.left) <= parseInt(divbox.style.left) + 80
+            && parseInt(imgObj.style.top) >= window.innerHeight - 100) {
+            document.body.removeChild(imgObj)
+            clearInterval(time)
+            number++
+            document.querySelector('#t2').innerText = number
+          }
+        }, 10)
+      }
+
+      var num = 0
+      var number = 0
+      var times = setInterval(function () {
+        num++
+        document.querySelector('#t1').innerText = num
+        createHotDog()
+      }, 500)
+
+      var timer = setInterval(function () {
+        if (time == 0) {
+          clearInterval(times)
+          clearInterval(timer)
+          setTimeout(() => {
+            inpt.style.display = 'block'
+            inpt.value = '游戏结束：你舔了' + number + '个热狗'
+          }, 2500);
+          h2.innerText = '倒计时：还剩0秒'
+        } else {
+          h2.innerText = '倒计时：还剩' + time + '秒'
+          time--
+        }
+      }, 1000)
+    }
+    inpt.onclick = function () {
+      location.href = location.href
+    }
+  </script>
+</body>
+
+</html>
